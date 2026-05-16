@@ -11,4 +11,5 @@ class Detection_Result(BaseModel):
 class Agent_State(TypedDict):
     image_bytes : bytes
     filename : str
+    content_type : str
     items : List[Ornament_Item]
