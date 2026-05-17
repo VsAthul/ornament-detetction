@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title = "Gold ornament detector",
-    description="Upload an image to detect and count gold ornaments using Qwen2-VL via Groq",
+    description="Upload an image to detect and count gold ornaments using a model via Groq",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -30,8 +30,8 @@ templates = Jinja2Templates(directory = "templates")
 async def ui(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
-        context={"model": "qwen2-vl-7b-instruct", "version": "1.0.0"})
+        name="index.html"
+        )
 
 
 @app.post("/analyze")
