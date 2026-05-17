@@ -28,11 +28,14 @@ templates = Jinja2Templates(directory = "templates")
 
 @app.get("/", response_class = HTMLResponse)
 async def ui(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"model": "qwen2-vl-7b-instruct", "version": "1.0.0"})
 
 
-@app.post("/upload")
-async def upload_image(file: UploadFile = File(...)):
+@app.post("/analyze")
+async def analyse(file: UploadFile = File(...)):
     image_bytes = await file.read()
 
     if not image_bytes:
@@ -46,7 +49,7 @@ async def upload_image(file: UploadFile = File(...)):
     }
 
     try :
-        result = detection_graph.run(state)
+        result = detection_graph.invoke(state)
     except AssertionError as e:
         raise HTTPException(status_code=500, detail= str(e))
     except Exception as e :

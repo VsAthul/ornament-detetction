@@ -1,59 +1,63 @@
 import base64
-import os
-from schemas import Agent_State, Detection_Result, Ornament_Item
-from groq import Groq
 import json
+import os
+from groq import Groq
+from schemas import Ornament_Item, Detection_Result, Agent_State
 from dotenv import load_dotenv
 
 load_dotenv()
+def detect_items(state: Agent_State) -> Agent_State:
 
-def detect_items(state : Agent_State)-> Agent_State:
-    client = Groq(
-        api_key=os.getenv("GROQ_API_KEY")
-    )
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
     b64 = base64.standard_b64encode(state["image_bytes"]).decode()
-    image_type = state["content_type"]
+    mime = state["content_type"]
+
     response = client.chat.completions.create(
-        model = "qwen2-vl-7b-instruct",
+        model="meta-llama/llama-4-scout-17b-16e-instruct",
         messages=[
             {
-                "role" : "user",
-                "content" : [
+                "role": "user",
+                "content": [
                     {
-                        "type" : "image_url",
-                        "image_url" : {
-                            "url" : f"data:{image_type};base64,{b64}", 
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:{mime};base64,{b64}",
                         },
                     },
                     {
-                        "type" : "text",
-                        "text" : (
+                        "type": "text",
+                        "text": (
                             "You are a gold ornament expert. "
                             "Identify every gold ornament visible in this image. "
-                            "For each distinct type, return the item_type "
-                            "(ring/bangle/chain/necklace/earring/bracelet/anklet/other) "
-                            "and the count of how many are visible. "
-                            "Respond ONLY with a valid JSON object in this exact format, "
-                            "no extra text:\n"
-                            '{"items": [{"item_type": "chain", "quantity": number in integer format}]}'
-                    
+                            "Return a JSON object with a key called 'items' which is a list of objects. "
+                            "Each object must have exactly two keys: "
+                            "'item_type' (string: ring, bangle, chain, necklace, earring, bracelet, anklet, or other) "
+                            "and 'quantity' (integer: count of that ornament type visible). "
+                            "If no gold ornaments are visible, return {\"items\": []}."
                         ),
                     },
                 ],
             }
         ],
-        max_tokens = 600,
-        temperature = 0,        
+        max_tokens=600,
+        temperature=0,
+        response_format={
+            "type": "json_object",
+            "schema": Detection_Result.model_json_schema(),
+        },
     )
-    raw = response.choices[0].message.content.strip()
 
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip()
+    raw = response.choices[0].message.content.strip()
+    print(f"\n--- Structured output ---\n{raw}\n-------------------------\n")
 
     parsed = json.loads(raw)
-    items = [Ornament_Item(**item) for item in parsed["items"]]
-    return {**state, "items" : items}
+
+    # Safety: remap 'count' to 'quantity' if model still uses wrong key
+    items = []
+    for item in parsed.get("items", []):
+        if "count" in item and "quantity" not in item:
+            item["quantity"] = item.pop("count")
+        items.append(Ornament_Item(**item))
+
+    return {**state, "items": items}

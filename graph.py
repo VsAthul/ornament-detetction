@@ -1,10 +1,10 @@
-from langgraph import StateGraph, END
+from langgraph.graph import StateGraph, END
 from schemas import Agent_State
 from nodes import load_image, detect_items, save_to_db
 
 def build_graph():
 
-    graph = StateGraph()
+    graph = StateGraph(Agent_State)
 
     graph.add_node("load_image", load_image)
     graph.add_node("detection", detect_items)
@@ -16,9 +16,9 @@ def build_graph():
     graph.add_edge("store_to_db", END)
 
     compiled_graph = graph.compile()
-    graph_image = compiled_graph.get_graph().draw_mermaid_png()
-    with open("graph.png", "wb") as f :
-        f.write(graph_image)
+    # graph_image = compiled_graph.get_graph().draw_mermaid_png()
+    # with open("graph.png", "wb") as f :
+    #     f.write(graph_image)
     return compiled_graph
 
 detection_graph = build_graph()
