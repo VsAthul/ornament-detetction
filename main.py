@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from database import initialize_db
 from graph import detection_graph
 from schemas import Agent_State
+from database import get_db_connection
 
 
 @asynccontextmanager
@@ -64,7 +65,7 @@ async def analyse(file: UploadFile = File(...)):
 
 @app.get("/history")
 async def history():
-    from database import get_db_connection
+    
     with get_db_connection() as conn:
         rows = conn.execute("select id, filename, item_type, quantity, created_at from detections order by created_at desc limit 50").fetchall()
 
