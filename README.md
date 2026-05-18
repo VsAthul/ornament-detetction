@@ -79,13 +79,7 @@ The server will start locally.
 
 ## Image Upload Example
 
-Example HTML form for uploading an image:
-
-```html
-<form action="/upload" method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" accept="image/*" required>
-    <button type="submit">Upload Image</button>
-</form>
+![Detection Page](static/screenshots/gold_detect.png)
 ```
 
 ## Technologies Used
