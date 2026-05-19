@@ -46,7 +46,7 @@ cd "ornament detection"
 ### 2. Create virtual environment
 
 ```bash
-python -m venv .venv
+uv will automatically create a virtual environment (.venv)
 ```
 
 ### 3. Activate virtual environment
@@ -66,7 +66,7 @@ source .venv/bin/activate
 ### 4. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+uv add -r requirements.txt
 ```
 
 ## Run the Project
@@ -89,14 +89,7 @@ The server will start locally.
 - SQLite
 - HTML
 - AI Image Detection
+- UV
 
-## Future Improvements
 
-- Add real-time detection
-- Improve UI design
-- Add user authentication
-- Support multiple image uploads
 
-## License
-
-This project is for educational purposes.
