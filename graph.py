@@ -15,10 +15,6 @@ def build_graph():
     graph.add_edge("detection", "store_to_db")
     graph.add_edge("store_to_db", END)
 
-    compiled_graph = graph.compile()
-    graph_image = compiled_graph.get_graph().draw_mermaid_png()
-    with open("graph.png", "wb") as f :
-        f.write(graph_image)
-    return compiled_graph
+    return graph.compile()
 
 detection_graph = build_graph()
