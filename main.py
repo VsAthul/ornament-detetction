@@ -63,29 +63,3 @@ async def analyse(file: UploadFile = File(...)):
         "items": [i.model_dump() for i  in result["items"]],
     }
 
-@app.get("/history")
-async def history():
-    
-    with get_db_connection() as conn:
-        rows = conn.execute("select id, filename, item_type, quantity, created_at from detections order by created_at desc limit 50").fetchall()
-
-        return {
-            "detections": [
-                {
-                    "id": row[0],
-                    "filename": row[1],
-                    "item_type": row[2],
-                    "quantity": row[3],
-                    "created_at": row[4]
-                }
-                for row in rows
-            ]
-        }
-    
-@app.get("/health")
-async def health():
-    return {
-        "status":"ok",
-        "model": "qwen2-vl-7b-instruct", 
-        "provider": "groq"
-    }
