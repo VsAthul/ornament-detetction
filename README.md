@@ -31,8 +31,61 @@ ornament detection/
 ├── templates/
 │   └── index.html
 │
-└── static/
+└── static/screenshots
 ```
+
+## AGENT FLOW
+
+![Langgraph Nodes Flow](graph.png)
+
+## Nodes
+
+### 1. `load_image`
+**File:** `nodes/load_image.py`
+
+- Validates the uploaded image.
+- Checks whether the image exists and is not empty.
+- Verifies supported image formats:
+  - JPEG
+  - PNG
+  - JPG
+  - WEBP
+- Passes the validated state to the next node.
+
+---
+
+### 2. `detection`
+**File:** `nodes/detect_items.py`
+
+- Converts the uploaded image into Base64 format.
+- Sends the image to the Groq LLM vision model.
+- Detects gold ornaments from the image.
+- Identifies ornament types such as:
+  - ring
+  - bangle
+  - chain
+  - necklace
+  - earring
+  - bracelet
+  - anklet
+  - coin
+  - other
+- Returns structured detection results with quantities.
+
+---
+
+### 3. `store_to_db`
+**File:** `nodes/save_to_db.py`
+
+- Stores detected ornament details into the SQLite database.
+- Saves:
+  - filename
+  - ornament type
+  - quantity
+  - timestamp
+- Commits all detection records into the `detections` table.
+
+---
 
 ## Installation
 
@@ -77,7 +130,7 @@ python main.py
 
 The server will start locally.
 
-## Image Upload Example
+## UI
 
 ![Detection Page](static/screenshots/gold_detect.png)
 ```
