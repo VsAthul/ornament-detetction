@@ -1,7 +1,7 @@
 import sqlite3
 
 
-DB_PATH = " detection.db"
+DB_PATH = "detection.db"
 
 def get_db_connection():
     return sqlite3.connect(DB_PATH)
@@ -17,3 +17,4 @@ def initialize_db():
                      created_at datetime default current_timestamp
                      )""")
         conn.commit()
+        print("database connected")

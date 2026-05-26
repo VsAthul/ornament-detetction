@@ -10,4 +10,5 @@ def save_to_db(state: Agent_State)-> Agent_State:
                 (state["filename"], item.item_type, item.quantity),
             )
         conn.commit()
+        print("data saved")
     return state

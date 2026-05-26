@@ -95,6 +95,7 @@ def detect_items(state: Agent_State) -> Agent_State:
         max_tokens=600,
         temperature=0,
         response_format={
+            
             "type": "json_object",
             "schema": Detection_Result.model_json_schema(),
         },
