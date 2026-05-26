@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, TypedDict
+from typing import List, TypedDict, Optional
 
 class Ornament_Item(BaseModel):
     item_type: str = Field(description="Type of ornament: ring, bangle, chain, necklace, earring, bracelet, anklet, or other")
@@ -13,3 +13,4 @@ class Agent_State(TypedDict):
     filename: str
     content_type: str
     items: List[Ornament_Item]
+    error: Optional[Exception]
